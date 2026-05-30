@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía V-COMB Visual</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue: #0C447C; --blue-light: #E6F1FB; --blue-mid: #185FA5;
+  --green: #27500A; --green-light: #EAF3DE; --green-mid: #3B6D11;
+  --amber: #633806; --amber-light: #FAEEDA; --amber-mid: #EF9F27;
+  --red: #8B0000; --red-light: #FCEBEB;
+  --gray: #F5F5F3; --gray-mid: #D3D1C7; --text: #1a1a18;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #f0f0ee;
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-mid) 100%);
+  padding: 2rem 1.25rem 1.75rem;
+  text-align: center;
+}
+.hero-logo { font-size: 52px; margin-bottom: .5rem; display: block; }
+.hero h1 { color: #fff; font-size: clamp(22px, 5vw, 30px); font-weight: 800; letter-spacing: -.5px; }
+.hero p { color: rgba(255,255,255,.8); font-size: 15px; margin-top: .4rem; }
+
+/* ── NAV DOTS ── */
+.nav-dots {
+  display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+  padding: 1rem 1rem .75rem; background: #fff;
+  position: sticky; top: 0; z-index: 100;
+  border-bottom: 2px solid var(--gray-mid);
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+.dot-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  background: var(--gray); border: 2px solid transparent;
+  border-radius: 12px; padding: 8px 12px; cursor: pointer;
+  transition: all .15s; min-width: 60px;
+}
+.dot-btn:hover { background: var(--blue-light); border-color: var(--blue-mid); }
+.dot-btn.active { background: var(--blue); border-color: var(--blue); }
+.dot-btn .dot-icon { font-size: 22px; }
+.dot-btn .dot-label { font-size: 10px; font-weight: 700; color: var(--text); white-space: nowrap; }
+.dot-btn.active .dot-label { color: #fff; }
+
+/* ── SECTION ── */
+.section {
+  max-width: 760px; margin: 1.5rem auto; padding: 0 1rem;
+}
+.section-title {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 1rem;
+}
+.section-title .icon-big { font-size: 36px; }
+.section-title-text h2 { font-size: 20px; font-weight: 800; color: var(--text); }
+.section-title-text p { font-size: 13px; color: #666; margin-top: 2px; }
+
+/* ── STEP CARDS ── */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+.step-card {
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,.07);
+  border: 2px solid transparent;
+  transition: transform .15s, box-shadow .15s;
+  cursor: default;
+}
+.step-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.1); }
+
+/* NUMBER BADGE */
+.step-number {
+  font-size: 11px; font-weight: 900; letter-spacing: .05em;
+  padding: 6px 14px; display: flex; align-items: center; gap: 8px;
+  text-transform: uppercase;
+}
+
+/* SVG ILLUSTRATION AREA */
+.step-visual {
+  width: 100%; aspect-ratio: 1 / 1;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; position: relative;
+  background: var(--gray);
+}
+.step-visual svg { width: 100%; height: 100%; }
+.step-visual img {
+  width: 100%; height: 100%; object-fit: cover;
+  position: absolute; inset: 0;
+  opacity: 0; transition: opacity .5s;
+}
+.step-visual img.loaded { opacity: 1; }
+.step-emoji-fallback {
+  font-size: 72px; z-index: 1; position: relative;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,.1));
+}
+
+/* STEP LABEL */
+.step-label {
+  padding: .75rem 1rem;
+  text-align: center;
+}
+.step-label h3 { font-size: 15px; font-weight: 800; color: var(--text); line-height: 1.3; }
+.step-label p { font-size: 12px; color: #666; margin-top: 4px; line-height: 1.4; }
+
+/* ── WARNING / TIP CARDS ── */
+.tip-card {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 1rem 1.25rem; border-radius: 16px; margin-bottom: 1rem;
+  border: 2px solid;
+}
+.tip-card .tip-icon { font-size: 32px; flex-shrink: 0; }
+.tip-card .tip-text h4 { font-size: 15px; font-weight: 800; margin-bottom: 3px; }
+.tip-card .tip-text p { font-size: 13px; line-height: 1.5; }
+.tip-card.warning { background: var(--amber-light); border-color: var(--amber-mid); }
+.tip-card.warning .tip-text h4, .tip-card.warning .tip-text p { color: var(--amber); }
+.tip-card.ok { background: var(--green-light); border-color: var(--green-mid); }
+.tip-card.ok .tip-text h4, .tip-card.ok .tip-text p { color: var(--green); }
+.tip-card.info { background: var(--blue-light); border-color: var(--blue-mid); }
+.tip-card.info .tip-text h4, .tip-card.info .tip-text p { color: var(--blue); }
+
+/* ── COLOR THEMES PER SECTION ── */
+.theme-blue .step-number { background: var(--blue); color: #fff; }
+.theme-blue .step-card { border-color: transparent; }
+.theme-blue .step-card:hover { border-color: var(--blue-mid); }
+.theme-blue .step-visual { background: var(--blue-light); }
+
+.theme-green .step-number { background: var(--green); color: #fff; }
+.theme-green .step-card { border-color: transparent; }
+.theme-green .step-card:hover { border-color: var(--green-mid); }
+.theme-green .step-visual { background: var(--green-light); }
+
+.theme-amber .step-number { background: var(--amber); color: #fff; }
+.theme-amber .step-card { border-color: transparent; }
+.theme-amber .step-card:hover { border-color: var(--amber-mid); }
+.theme-amber .step-visual { background: var(--amber-light); }
+
+/* ── FREQ TABLE VISUAL ── */
+.freq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.freq-card {
+  background: #fff; border-radius: 16px; padding: 1rem;
+  text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  border: 2px solid;
+}
+.freq-card .freq-icon { font-size: 40px; display: block; margin-bottom: 6px; }
+.freq-card .freq-title { font-size: 13px; font-weight: 700; color: var(--text); }
+.freq-card .freq-count { font-size: 22px; font-weight: 900; margin: 4px 0; }
+.freq-card .freq-desc { font-size: 11px; color: #666; line-height: 1.4; }
+.freq-card.red { border-color: #e53935; }
+.freq-card.red .freq-count { color: #e53935; }
+.freq-card.amber { border-color: var(--amber-mid); }
+.freq-card.amber .freq-count { color: var(--amber); }
+.freq-card.green { border-color: var(--green-mid); }
+.freq-card.green .freq-count { color: var(--green); }
+.freq-card.blue { border-color: var(--blue-mid); }
+.freq-card.blue .freq-count { color: var(--blue); }
+
+/* ── DIVIDER ── */
+.divider { height: 4px; background: linear-gradient(90deg, var(--blue-light), var(--gray-mid), var(--blue-light)); border-radius: 4px; margin: 1.5rem 0; }
+
+/* ── CTA ── */
+.cta { background: linear-gradient(135deg, var(--blue) 0%, var(--blue-mid) 100%); border-radius: 20px; padding: 1.75rem 1.5rem; text-align: center; margin: 1.5rem auto; max-width: 760px; }
+.cta h3 { font-size: 18px; font-weight: 800; color: #fff; }
+.cta p { font-size: 14px; color: rgba(255,255,255,.85); margin-top: .5rem; line-height: 1.65; }
+
+/* ── PRODUCT CARDS ── */
+.products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
+.product-card {
+  background: #fff; border-radius: 20px; overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,.07); text-align: center;
+  border: 2px solid var(--gray-mid); transition: transform .15s;
+}
+.product-card:hover { transform: translateY(-2px); }
+.product-visual { aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; font-size: 60px; position: relative; overflow: hidden; }
+.product-visual img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .5s; }
+.product-visual img.loaded { opacity: 1; }
+.product-label { font-size: 10px; font-weight: 800; padding: 4px 10px; text-transform: uppercase; letter-spacing: .05em; }
+.label-before { background: var(--blue); color: #fff; }
+.label-after  { background: var(--green); color: #fff; }
+.label-prevent{ background: var(--amber); color: #fff; }
+.product-name { font-size: 13px; font-weight: 800; color: var(--text); padding: .5rem .75rem .1rem; }
+.product-desc { font-size: 11px; color: #666; padding: 0 .75rem .75rem; line-height: 1.4; }
+
+@media (max-width: 480px) {
+  .steps-grid { grid-template-columns: repeat(2, 1fr); }
+  .freq-grid { grid-template-columns: repeat(2, 1fr); }
+  .products-grid { grid-template-columns: repeat(2, 1fr); }
+  .dot-btn { padding: 6px 8px; min-width: 48px; }
+  .dot-btn .dot-label { font-size: 9px; }
+}
+
+.section-sep {
+  max-width: 760px; margin: 0 auto 2rem; padding: 0 1rem;
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <img src="data:image/jpeg;base64,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" alt="VELDROP" style="height:64px;object-fit:contain;margin-bottom:.75rem;display:block;margin-left:auto;margin-right:auto;filter:brightness(0) invert(1);">
+  <h1>Guía V-COMB</h1>
+  <p>Sigue las imágenes — paso a paso</p>
+</div>
+
+<nav class="nav-dots" id="nav">
+  <button class="dot-btn active" onclick="goTo('s-funciona')"><span class="dot-icon">🔬</span><span class="dot-label">¿Qué hace?</span></button>
+  <button class="dot-btn" onclick="goTo('s-prep')"><span class="dot-icon">🚿</span><span class="dot-label">Preparar</span></button>
+  <button class="dot-btn" onclick="goTo('s-uso')"><span class="dot-icon">⚡</span><span class="dot-label">Usar</span></button>
+  <button class="dot-btn" onclick="goTo('s-freq')"><span class="dot-icon">📅</span><span class="dot-label">Cuándo</span></button>
+  <button class="dot-btn" onclick="goTo('s-prod')"><span class="dot-icon">🫒</span><span class="dot-label">Productos</span></button>
+  <button class="dot-btn" onclick="goTo('s-prev')"><span class="dot-icon">🛡️</span><span class="dot-label">Prevenir</span></button>
+  <button class="dot-btn" onclick="goTo('s-limpia')"><span class="dot-icon">✨</span><span class="dot-label">Limpiar</span></button>
+</nav>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- 1. QUÉ HACE -->
+<!-- ════════════════════════════════════════════════════ -->
+<section class="section" id="s-funciona">
+  <div class="section-title">
+    <span class="icon-big">🔬</span>
+    <div class="section-title-text">
+      <h2>¿Qué hace el V-COMB?</h2>
+      <p>Aspira y atrapa los piojos sin químicos</p>
+    </div>
+  </div>
+
+  <div class="steps-grid theme-blue" style="grid-template-columns: repeat(auto-fit,minmax(140px,1fr))">
+    <div class="step-card">
+      <div class="step-visual" style="background:#E6F1FB">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- peine eléctrico simplificado -->
+          <rect x="70" y="30" width="60" height="110" rx="12" fill="#0C447C"/>
+          <rect x="82" y="140" width="8" height="30" rx="4" fill="#185FA5"/>
+          <rect x="95" y="140" width="8" height="25" rx="4" fill="#185FA5"/>
+          <rect x="108" y="140" width="8" height="30" rx="4" fill="#185FA5"/>
+          <rect x="85" y="50" width="30" height="18" rx="5" fill="#B5D4F4"/>
+          <circle cx="100" cy="95" r="14" fill="#B5D4F4"/>
+          <text x="100" y="100" text-anchor="middle" font-size="16" fill="#0C447C" font-weight="bold">V</text>
+          <!-- chispas aspiración -->
+          <circle cx="145" cy="60" r="5" fill="#EF9F27" opacity=".8"/>
+          <circle cx="155" cy="80" r="4" fill="#EF9F27" opacity=".6"/>
+          <circle cx="148" cy="100" r="3" fill="#EF9F27" opacity=".5"/>
+          <path d="M140 65 Q155 75 148 95" stroke="#EF9F27" stroke-width="2" fill="none" stroke-dasharray="4 3" opacity=".7"/>
+        </svg>
+      </div>
+      <div class="step-label">
+        <h3>Peine con vacío</h3>
+        <p>Aspira los piojos mientras peinás</p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-visual" style="background:#EAF3DE">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- filtro con bichitos adentro -->
+          <rect x="55" y="60" width="90" height="80" rx="14" fill="#fff" stroke="#27500A" stroke-width="3"/>
+          <rect x="55" y="60" width="90" height="25" rx="14" fill="#27500A"/>
+          <text x="100" y="78" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">FILTRO</text>
+          <!-- piojos capturados -->
+          <ellipse cx="80" cy="115" rx="10" ry="7" fill="#1a1a18"/>
+          <ellipse cx="105" cy="105" rx="9" ry="6" fill="#1a1a18"/>
+          <ellipse cx="120" cy="125" rx="8" ry="5" fill="#1a1a18"/>
+          <ellipse cx="75" cy="130" rx="7" ry="5" fill="#333"/>
+          <!-- check -->
+          <circle cx="150" cy="60" r="18" fill="#27500A"/>
+          <text x="150" y="67" text-anchor="middle" font-size="18" fill="#fff">✓</text>
+        </svg>
+      </div>
+      <div class="step-label">
+        <h3>Los atrapa en el filtro</h3>
+        <p>Puedes verlos adentro</p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-visual" style="background:#FAEEDA">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- tachado de químicos -->
+          <circle cx="100" cy="100" r="60" fill="#FCEBEB" stroke="#e53935" stroke-width="3"/>
+          <!-- botella de químicos -->
+          <rect x="82" y="70" width="36" height="60" rx="8" fill="#aaa"/>
+          <rect x="88" y="58" width="24" height="18" rx="4" fill="#888"/>
+          <text x="100" y="104" text-anchor="middle" font-size="11" fill="#fff" font-weight="bold">⚗️</text>
+          <!-- tachado rojo -->
+          <line x1="55" y1="55" x2="145" y2="145" stroke="#e53935" stroke-width="8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="step-label">
+        <h3>Sin químicos</h3>
+        <p>Seguro para niños y embarazadas</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-sep"><div class="divider"></div></div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- 2. PREPARACIÓN -->
+<!-- ════════════════════════════════════════════════════ -->
+<section class="section" id="s-prep">
+  <div class="section-title">
+    <span class="icon-big">🚿</span>
+    <div class="section-title-text">
+      <h2>Antes de usar: prepara el cabello</h2>
+      <p>4 pasos antes de encender el peine</p>
+    </div>
+  </div>
+
+  <div class="steps-grid theme-blue">
+    <div class="step-card">
+      <div class="step-number">
+        <span style="font-size:22px;font-weight:900">1</span> Lavar
+      </div>
+      <div class="step-visual">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- cabeza bajo ducha -->
+          <circle cx="100" cy="75" r="38" fill="#B5D4F4"/>
+          <!-- cabello -->
+          <path d="M65 75 Q62 45 100 40 Q138 45 135 75 Q120 60 100 62 Q80 60 65 75Z" fill="#5a3a1a"/>
+          <!-- cara simple -->
+          <circle cx="92" cy="75" r="4" fill="#0C447C"/>
+          <circle cx="108" cy="75" r="4" fill="#0C447C"/>
+          <path d="M90 88 Q100 95 110 88" stroke="#0C447C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <!-- gotas de agua cayendo -->
+          <ellipse cx="75" cy="130" rx="5" ry="8" fill="#B5D4F4" opacity=".8"/>
+          <ellipse cx="95" cy="140" rx="5" ry="8" fill="#B5D4F4" opacity=".8"/>
+          <ellipse cx="115" cy="132" rx="5" ry="8" fill="#B5D4F4" opacity=".8"/>
+          <ellipse cx="130" cy="142" rx="5" ry="8" fill="#B5D4F4" opacity=".6"/>
+          <ellipse cx="85" cy="155" rx="4" ry="7" fill="#B5D4F4" opacity=".5"/>
+          <!-- shampoo burbuja -->
+          <circle cx="145" cy="65" r="8" fill="#fff" stroke="#B5D4F4" stroke-width="2"/>
+          <circle cx="160" cy="55" r="5" fill="#fff" stroke="#B5D4F4" stroke-width="2"/>
+          <circle cx="155" cy="72" r="4" fill="#fff" stroke="#B5D4F4" stroke-width="2"/>
+        </svg>
+        <img data-src="https://images.pexels.com/photos/5241036/pexels-photo-5241036.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop" alt="Lavar cabello">
+      </div>
+      <div class="step-label">
+        <h3>🚿 Lava el cabello</h3>
+        <p>Con shampoo. Luego sécalo bien.</p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">
+        <span style="font-size:22px;font-weight:900">2</span> Secar
+      </div>
+      <div class="step-visual">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- cabeza con toalla -->
+          <circle cx="100" cy="90" r="38" fill="#f5d5a0"/>
+          <!-- toalla -->
+          <ellipse cx="100" cy="62" rx="45" ry="22" fill="#E6F1FB"/>
+          <rect x="55" y="62" width="90" height="18" rx="0" fill="#B5D4F4"/>
+          <!-- cara -->
+          <circle cx="90" cy="90" r="4" fill="#5a3a1a"/>
+          <circle cx="110" cy="90" r="4" fill="#5a3a1a"/>
+          <path d="M88 103 Q100 112 112 103" stroke="#5a3a1a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <!-- secador -->
+          <ellipse cx="165" cy="130" rx="20" ry="14" fill="#0C447C"/>
+          <rect x="152" y="136" width="8" height="28" rx="4" fill="#185FA5"/>
+          <!-- líneas de aire caliente -->
+          <path d="M145 125 Q130 118 118 122" stroke="#EF9F27" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="5 3"/>
+          <path d="M145 130 Q128 128 115 135" stroke="#EF9F27" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="5 3"/>
+          <path d="M145 136 Q130 138 118 145" stroke="#EF9F27" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="5 3"/>
+          <!-- X en agua -->
+          <circle cx="55" cy="150" r="15" fill="#FCEBEB" stroke="#e53935" stroke-width="2"/>
+          <text x="55" y="157" text-anchor="middle" font-size="16" fill="#e53935" font-weight="bold">💧</text>
+          <line x1="43" y1="138" x2="67" y2="162" stroke="#e53935" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <img data-src="https://images.pexels.com/photos/3993461/pexels-photo-3993461.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop" alt="Secar cabello">
+      </div>
+      <div class="step-label">
+        <h3>💨 Sécalo bien</h3>
+        <p>Debe estar completamente seco. <strong>Nunca mojado.</strong></p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">
+        <span style="font-size:22px;font-weight:900">3</span> Aceite
+      </div>
+      <div class="step-visual">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- frasco de aceite -->
+          <rect x="78" y="60" width="44" height="90" rx="10" fill="#d4a017"/>
+          <rect x="85" y="48" width="30" height="18" rx="5" fill="#b8860b"/>
+          <ellipse cx="100" cy="48" rx="15" ry="6" fill="#8B6914"/>
+          <!-- etiqueta -->
+          <rect x="82" y="90" width="36" height="30" rx="5" fill="#fff" opacity=".8"/>
+          <text x="100" y="107" text-anchor="middle" font-size="11" fill="#5a3a1a" font-weight="bold">🫒</text>
+          <!-- gotas cayendo sobre cabello -->
+          <ellipse cx="140" cy="140" rx="6" ry="9" fill="#d4a017" opacity=".8"/>
+          <ellipse cx="125" cy="155" rx="5" ry="8" fill="#d4a017" opacity=".7"/>
+          <!-- cabello simplificado debajo -->
+          <path d="M50 165 Q75 150 100 160 Q125 150 150 165" stroke="#5a3a1a" stroke-width="8" fill="none" stroke-linecap="round"/>
+        </svg>
+        <img data-src="https://images.pexels.com/photos/7296399/pexels-photo-7296399.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop" alt="Aceite de oliva">
+      </div>
+      <div class="step-label">
+        <h3>🫒 Aceite (opcional)</h3>
+        <p>Un poco en el cabello para que deslice mejor</p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">
+        <span style="font-size:22px;font-weight:900">4</span> Cargar
+      </div>
+      <div class="step-visual">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- batería llena -->
+          <rect x="55" y="70" width="90" height="50" rx="10" fill="#fff" stroke="#27500A" stroke-width="3"/>
+          <rect x="145" y="83" width="14" height="24" rx="5" fill="#27500A"/>
+          <!-- barra de batería llena -->
+          <rect x="62" y="78" width="70" height="34" rx="6" fill="#27500A"/>
+          <!-- rayo -->
+          <text x="97" y="103" text-anchor="middle" font-size="26" fill="#fff" font-weight="bold">⚡</text>
+          <!-- cable USB -->
+          <path d="M100 120 L100 150" stroke="#0C447C" stroke-width="5" stroke-linecap="round"/>
+          <rect x="82" y="150" width="36" height="20" rx="6" fill="#0C447C"/>
+          <text x="100" y="165" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">USB</text>
+          <!-- texto 100% -->
+          <text x="100" y="58" text-anchor="middle" font-size="18" fill="#27500A" font-weight="900">100%</text>
+        </svg>
+      </div>
+      <div class="step-label">
+        <h3>🔋 Carga el peine</h3>
+        <p>Asegúrate que esté con batería completa</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-sep"><div class="divider"></div></div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- 3. CÓMO USAR -->
+<!-- ════════════════════════════════════════════════════ -->
+<section class="section" id="s-uso">
+  <div class="section-title">
+    <span class="icon-big">⚡</span>
+    <div class="section-title-text">
+      <h2>Cómo usar el V-COMB</h2>
+      <p>Sigue cada imagen</p>
+    </div>
+  </div>
+
+  <div class="tip-card warning" style="margin-bottom:1rem">
+    <span class="tip-icon">⚠️</span>
+    <div class="tip-text">
+      <h4>¡IMPORTANTE!</h4>
+      <p>Nunca mojes el cuerpo del peine. Solo el cabezal va al agua.</p>
+    </div>
+  </div>
+
+  <div class="steps-grid theme-blue">
+    <div class="step-card">
+      <div class="step-number"><span style="font-size:22px;font-weight:900">1</span> Encender</div>
+      <div class="step-visual">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- mano presionando botón -->
+          <rect x="70" y="40" width="60" height="100" rx="12" fill="#0C447C"/>
+          <!-- botón -->
+          <circle cx="100" cy="80" r="18" fill="#B5D4F4"/>
+          <circle cx="100" cy="80" r="12" fill="#185FA5"/>
+          <!-- dedo presionando -->
+          <ellipse cx="100" cy="52" rx="14" ry="22" fill="#f5d5a0"/>
+          <ellipse cx="100" cy="35" rx="10" ry="14" fill="#f5d5a0"/>
+          <!-- onda de sonido / encendido -->
+          <path d="M132 65 Q145 80 132 95" stroke="#EF9F27" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M140 58 Q158 80 140 102" stroke="#EF9F27" stroke-width="3" fill="none" stroke-linecap="round" opacity=".6"/>
+          <!-- dientes del peine abajo -->
+          <rect x="82" y="140" width="8" height="25" rx="4" fill="#185FA5"/>
+          <rect x="96" y="140" width="8" height="22" rx="4" fill="#185FA5"/>
+          <rect x="110" y="140" width="8" height="25" rx="4" fill="#185FA5"/>
+        </svg>
+      </div>
+      <div class="step-label">
+        <h3>Presiona el botón azul</h3>
+        <p>Escucharás el zumbido del vacío ✅</p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number"><span style="font-size:22px;font-weight:900">2</span> Nuca primero</div>
+      <div class="step-visual">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- perfil cabeza -->
+          <circle cx="100" cy="75" r="45" fill="#f5d5a0"/>
+          <!-- cabello -->
+          <path d="M57 70 Q55 35 100 30 Q145 35 143 70 Q130 50 100 52 Q70 50 57 70Z" fill="#5a3a1a"/>
+          <!-- nuca marcada con estrella/punto -->
+          <circle cx="100" cy="118" r="12" fill="#e53935"/>
+          <text x="100" y="124" text-anchor="middle" font-size="14" fill="#fff" font-weight="bold">★</text>
+          <!-- flecha hacia nuca -->
+          <path d="M148 155 L115 125" stroke="#e53935" stroke-width="3" fill="none" marker-end="url(#arr)" stroke-linecap="round"/>
+          <defs>
+            <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#e53935"/>
+            </marker>
+          </defs>
+          <text x="158" y="165" text-anchor="middle" font-size="11" fill="#e53935" font-weight="bold">Aquí</text>
+          <text x="158" y="177" text-anchor="middle" font-size="11" fill="#e53935" font-weight="bold">primero</text>
+        </svg>
+        <img data-src="https://images.pexels.com/photos/9166025/pexels-photo-9166025.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop" alt="Nuca">
+      </div>
+      <div class="step-label">
+        <h3>🎯 Empieza por la nuca</h3>
+        <p>Ahí hay más piojos. Luego sigue hacia arriba.</p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number"><span style="font-size:22px;font-weight:900">3</span> Seccionar</div>
+      <div class="step-visual">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- cabello dividido en secciones con pinzas -->
+          <!-- fondo cabeza vista superior -->
+          <ellipse cx="100" cy="100" rx="70" ry="80" fill="#f5d5a0"/>
+          <!-- líneas de sección -->
+          <line x1="100" y1="25" x2="100" y2="175" stroke="#EF9F27" stroke-width="3" stroke-dasharray="6 3"/>
+          <line x1="40" y1="90" x2="160" y2="90" stroke="#EF9F27" stroke-width="3" stroke-dasharray="6 3"/>
+          <!-- pinzas en las secciones -->
+          <rect x="55" y="50" width="28" height="10" rx="5" fill="#e53935"/>
+          <rect x="117" y="110" width="28" height="10" rx="5" fill="#e53935"/>
+          <!-- sección activa resaltada -->
+          <path d="M40 25 Q100 20 100 90 L40 90 Z" fill="#B5D4F4" opacity=".45"/>
+          <text x="58" y="65" text-anchor="middle" font-size="11" fill="#0C447C" font-weight="bold">1 cm</text>
+          <!-- flecha y medida -->
+          <line x1="40" y1="75" x2="100" y2="75" stroke="#0C447C" stroke-width="2"/>
+          <line x1="40" y1="71" x2="40" y2="79" stroke="#0C447C" stroke-width="2"/>
+          <line x1="100" y1="71" x2="100" y2="79" stroke="#0C447C" stroke-width="2"/>
+        </svg>
+        <img data-src="https://images.pexels.com/photos/7440140/pexels-photo-7440140.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop" alt="Seccionar">
+      </div>
+      <div class="step-label">
+        <h3>✂️ Divide el cabello</h3>
+        <p>Secciones chicas, usa clips para apartar el resto</p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number"><span style="font-size:22px;font-weight:900">4</span> Peinar</div>
+      <div class="step-visual">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- cabello largo -->
+          <path d="M60 30 Q100 25 140 30 L145 170 Q100 180 55 170 Z" fill="#5a3a1a"/>
+          <!-- peine deslizándose de raíz a punta -->
+          <rect x="85" y="28" width="30" height="80" rx="8" fill="#0C447C"/>
+          <rect x="90" y="108" width="6" height="25" rx="3" fill="#185FA5"/>
+          <rect x="100" y="108" width="6" height="22" rx="3" fill="#185FA5"/>
+          <rect x="110" y="108" width="6" height="25" rx="3" fill="#185FA5"/>
+          <!-- flecha hacia abajo -->
+          <path d="M155 50 L155 140" stroke="#EF9F27" stroke-width="4" stroke-linecap="round" marker-end="url(#arr2)"/>
+          <defs>
+            <marker id="arr2" markerWidth="10" markerHeight="10" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L10,3 z" fill="#EF9F27"/>
+            </marker>
+          </defs>
+          <text x="167" y="95" text-anchor="middle" font-size="10" fill="#EF9F27" font-weight="bold" transform="rotate(90,167,95)">Raíz → Puntas</text>
+        </svg>
+        <img data-src="https://images.pexels.com/photos/3993320/pexels-photo-3993320.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop" alt="Peinar">
+      </div>
+      <div class="step-label">
+        <h3>⬇️ De raíz a puntas</h3>
+        <p>Desliza suave. Repite varias veces.</p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number"><span style="font-size:22px;font-weight:900">5</span> Ver filtro</div>
+      <div class="step-visual">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- filtro transparente con piojos -->
+          <rect x="50" y="55" width="100" height="90" rx="14" fill="#E6F1FB" stroke="#0C447C" stroke-width="3"/>
+          <!-- bombilla LED adentro -->
+          <circle cx="100" cy="80" r="16" fill="#fff7c0" stroke="#EF9F27" stroke-width="2"/>
+          <text x="100" y="86" text-anchor="middle" font-size="16">💡</text>
+          <!-- piojos visibles -->
+          <ellipse cx="78" cy="118" rx="9" ry="6" fill="#1a1a18"/>
+          <ellipse cx="100" cy="110" rx="8" ry="5" fill="#1a1a18"/>
+          <ellipse cx="120" cy="122" rx="8" ry="5" fill="#1a1a18"/>
+          <ellipse cx="85" cy="132" rx="7" ry="5" fill="#333"/>
+          <!-- ojo mirando -->
+          <text x="162" y="60" text-anchor="middle" font-size="28">👁️</text>
+          <!-- flecha señalando el filtro -->
+          <path d="M150 72 L130 90" stroke="#0C447C" stroke-width="2.5" fill="none" stroke-linecap="round" marker-end="url(#arr3)"/>
+          <defs>
+            <marker id="arr3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#0C447C"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+      <div class="step-label">
+        <h3>👁️ Mira el filtro</h3>
+        <p>Verás los piojos adentro. ¡Funciona!</p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number"><span style="font-size:22px;font-weight:900">6</span> Vaciar</div>
+      <div class="step-visual">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- filtro sobre basurero -->
+          <rect x="65" y="30" width="70" height="60" rx="10" fill="#E6F1FB" stroke="#0C447C" stroke-width="2.5"/>
+          <text x="100" y="50" text-anchor="middle" font-size="11" fill="#0C447C" font-weight="bold">FILTRO</text>
+          <!-- piojos cayendo -->
+          <ellipse cx="88" cy="108" rx="6" ry="5" fill="#1a1a18"/>
+          <ellipse cx="100" cy="118" rx="6" ry="5" fill="#1a1a18"/>
+          <ellipse cx="113" cy="105" rx="5" ry="4" fill="#333"/>
+          <!-- flechas de caída -->
+          <path d="M90 88 L88 100" stroke="#666" stroke-width="2" marker-end="url(#arr4)" stroke-linecap="round"/>
+          <path d="M100 88 L100 110" stroke="#666" stroke-width="2" marker-end="url(#arr4)" stroke-linecap="round"/>
+          <path d="M110 88 L113 98" stroke="#666" stroke-width="2" marker-end="url(#arr4)" stroke-linecap="round"/>
+          <defs>
+            <marker id="arr4" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="#666"/>
+            </marker>
+          </defs>
+          <!-- basurero -->
+          <rect x="68" y="135" width="64" height="50" rx="6" fill="#aaa"/>
+          <rect x="60" y="130" width="80" height="12" rx="4" fill="#888"/>
+          <rect x="78" y="118" width="44" height="15" rx="4" fill="#888"/>
+          <!-- signo de reciclaje en filtro -->
+          <text x="100" y="67" text-anchor="middle" font-size="16">♻️</text>
+        </svg>
+      </div>
+      <div class="step-label">
+        <h3>🗑️ Vacía y lava el filtro</h3>
+        <p>Se puede reutilizar muchas veces</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-sep"><div class="divider"></div></div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- 4. FRECUENCIA -->
+<!-- ════════════════════════════════════════════════════ -->
+<section class="section" id="s-freq">
+  <div class="section-title">
+    <span class="icon-big">📅</span>
+    <div class="section-title-text">
+      <h2>¿Cuántas veces usar el peine?</h2>
+      <p>Según la situación de tu hijo/a</p>
+    </div>
+  </div>
+
+  <div class="freq-grid">
+    <div class="freq-card red">
+      <span class="freq-icon">😰</span>
+      <div class="freq-title">Tiene muchos piojos</div>
+      <div class="freq-count">Cada día</div>
+      <div class="freq-desc">Por 2 semanas seguidas sin saltarse</div>
+    </div>
+    <div class="freq-card amber">
+      <span class="freq-icon">😐</span>
+      <div class="freq-title">Ya quedan pocos</div>
+      <div class="freq-count">Cada 3–4 días</div>
+      <div class="freq-desc">Por 3 semanas más para eliminarlos todos</div>
+    </div>
+    <div class="freq-card green">
+      <span class="freq-icon">😊</span>
+      <div class="freq-title">Para prevenir</div>
+      <div class="freq-count">2–3 veces por semana</div>
+      <div class="freq-desc">Especialmente cuando hay clases</div>
+    </div>
+    <div class="freq-card blue">
+      <span class="freq-icon">👨‍👩‍👧‍👦</span>
+      <div class="freq-title">Revisar la familia</div>
+      <div class="freq-count">1 vez por semana</div>
+      <div class="freq-desc">Revisa a todos en la casa cada semana</div>
+    </div>
+  </div>
+
+  <div class="tip-card info" style="margin-top:1rem">
+    <span class="tip-icon">⏱️</span>
+    <div class="tip-text">
+      <h4>¿Cuánto tiempo?</h4>
+      <p>Cabello corto: 5 minutos. Cabello largo: hasta 20 minutos. ¡No hay que apurarse!</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-sep"><div class="divider"></div></div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- 5. PRODUCTOS -->
+<!-- ════════════════════════════════════════════════════ -->
+<section class="section" id="s-prod">
+  <div class="section-title">
+    <span class="icon-big">🫒</span>
+    <div class="section-title-text">
+      <h2>¿Qué poner en el cabello?</h2>
+      <p>Productos naturales que ayudan</p>
+    </div>
+  </div>
+
+  <div class="products-grid">
+    <div class="product-card">
+      <div class="product-visual" style="background:#FAEEDA">🫒
+        <img data-src="https://images.pexels.com/photos/7296399/pexels-photo-7296399.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop" alt="Aceite de oliva">
+      </div>
+      <div class="product-label label-before">Antes</div>
+      <div class="product-name">Aceite de oliva</div>
+      <div class="product-desc">Inmoviliza los piojos. Pon un poco antes de peinar.</div>
+    </div>
+    <div class="product-card">
+      <div class="product-visual" style="background:#E6F1FB">💧
+        <img data-src="https://images.pexels.com/photos/3735657/pexels-photo-3735657.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop" alt="Acondicionador">
+      </div>
+      <div class="product-label label-before">Antes</div>
+      <div class="product-name">Acondicionador</div>
+      <div class="product-desc">Suaviza el cabello para que el peine deslice mejor.</div>
+    </div>
+    <div class="product-card">
+      <div class="product-visual" style="background:#EAF3DE">🌿
+        <img data-src="https://images.pexels.com/photos/6694130/pexels-photo-6694130.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop" alt="Árbol del té">
+      </div>
+      <div class="product-label label-after">Después</div>
+      <div class="product-name">Árbol del té</div>
+      <div class="product-desc">Aleja los piojos. Aplicar después del tratamiento.</div>
+    </div>
+    <div class="product-card">
+      <div class="product-visual" style="background:#F3E8FF">🌸
+        <img data-src="https://images.pexels.com/photos/6693929/pexels-photo-6693929.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop" alt="Lavanda">
+      </div>
+      <div class="product-label label-prevent">Prevenir</div>
+      <div class="product-name">Lavanda</div>
+      <div class="product-desc">Ahuyenta piojos. Úsalo en días de colegio.</div>
+    </div>
+    <div class="product-card">
+      <div class="product-visual" style="background:#F5F5F3">🍶
+        <img data-src="https://images.pexels.com/photos/8469437/pexels-photo-8469437.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop" alt="Vinagre">
+      </div>
+      <div class="product-label label-before">Antes</div>
+      <div class="product-name">Vinagre blanco</div>
+      <div class="product-desc">Disuelve las liendres. Mezcla con agua, aplica y peina.</div>
+    </div>
+    <div class="product-card">
+      <div class="product-visual" style="background:#FFF8E8">🥥
+        <img data-src="https://images.pexels.com/photos/28994394/pexels-photo-28994394.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop" alt="Coco">
+      </div>
+      <div class="product-label label-after">Después</div>
+      <div class="product-name">Aceite de coco</div>
+      <div class="product-desc">Hidrata y dificulta que los piojos se peguen.</div>
+    </div>
+  </div>
+</section>
+
+<div class="section-sep"><div class="divider"></div></div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- 6. PREVENCIÓN -->
+<!-- ════════════════════════════════════════════════════ -->
+<section class="section" id="s-prev">
+  <div class="section-title">
+    <span class="icon-big">🛡️</span>
+    <div class="section-title-text">
+      <h2>Cómo prevenir los piojos</h2>
+      <p>Hábitos sencillos que funcionan</p>
+    </div>
+  </div>
+
+  <div class="steps-grid theme-green" style="grid-template-columns: repeat(auto-fit,minmax(155px,1fr))">
+    <div class="step-card">
+      <div class="step-visual" style="background:#EAF3DE">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- cabeza con trenza -->
+          <circle cx="100" cy="70" r="42" fill="#f5d5a0"/>
+          <path d="M62 65 Q60 35 100 30 Q140 35 138 65 Q125 48 100 50 Q75 48 62 65Z" fill="#5a3a1a"/>
+          <!-- trenza -->
+          <path d="M100 110 Q90 130 95 150 Q100 165 100 175" stroke="#5a3a1a" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <path d="M100 110 Q110 130 105 150 Q100 165 100 175" stroke="#3a1a0a" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <!-- moño/lazo -->
+          <ellipse cx="85" cy="112" rx="14" ry="8" fill="#e53935" transform="rotate(-20,85,112)"/>
+          <ellipse cx="115" cy="112" rx="14" ry="8" fill="#e53935" transform="rotate(20,115,112)"/>
+          <circle cx="100" cy="112" r="7" fill="#c62828"/>
+          <!-- check verde -->
+          <circle cx="160" cy="45" r="18" fill="#27500A"/>
+          <text x="160" y="52" text-anchor="middle" font-size="18" fill="#fff">✓</text>
+        </svg>
+        <img data-src="https://images.pexels.com/photos/9166025/pexels-photo-9166025.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop" alt="Cabello recogido">
+      </div>
+      <div class="step-label">
+        <h3>💇 Recoge el cabello</h3>
+        <p>Trenza o moño en días de colegio</p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-visual" style="background:#EAF3DE">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- dos peines / gorros con X entre ellos -->
+          <text x="65" y="90" font-size="50" text-anchor="middle">🎩</text>
+          <text x="135" y="90" font-size="50" text-anchor="middle">🎧</text>
+          <!-- flecha doble tachada -->
+          <circle cx="100" cy="130" r="30" fill="#FCEBEB" stroke="#e53935" stroke-width="3"/>
+          <line x1="78" y1="108" x2="122" y2="152" stroke="#e53935" stroke-width="5" stroke-linecap="round"/>
+          <text x="100" y="140" text-anchor="middle" font-size="20" fill="#e53935" font-weight="bold">NO</text>
+        </svg>
+      </div>
+      <div class="step-label">
+        <h3>🚫 No compartas</h3>
+        <p>Gorros, peines ni audífonos</p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-visual" style="background:#EAF3DE">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- lavadora -->
+          <rect x="40" y="50" width="120" height="110" rx="14" fill="#0C447C"/>
+          <circle cx="100" cy="115" r="38" fill="#185FA5"/>
+          <circle cx="100" cy="115" r="30" fill="#B5D4F4" opacity=".5"/>
+          <!-- ropa girando -->
+          <text x="100" y="122" text-anchor="middle" font-size="30">👕</text>
+          <!-- vapor / calor -->
+          <path d="M55 60 Q60 50 65 60" stroke="#EF9F27" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M70 55 Q75 45 80 55" stroke="#EF9F27" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M85 50 Q90 40 95 50" stroke="#EF9F27" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <!-- temperatura -->
+          <text x="155" y="75" text-anchor="middle" font-size="13" fill="#EF9F27" font-weight="bold">60°C</text>
+        </svg>
+        <img data-src="https://images.pexels.com/photos/5241036/pexels-photo-5241036.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop" alt="Lavar ropa">
+      </div>
+      <div class="step-label">
+        <h3>🌡️ Lava a 60°C</h3>
+        <p>Ropa de cama y toallas del niño</p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-visual" style="background:#EAF3DE">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- lupa sobre cabeza -->
+          <circle cx="90" cy="90" r="45" fill="#f5d5a0"/>
+          <path d="M52 85 Q50 55 90 48 Q130 55 128 85 Q115 68 90 70 Q65 68 52 85Z" fill="#5a3a1a"/>
+          <!-- lupa -->
+          <circle cx="130" cy="60" r="28" fill="none" stroke="#27500A" stroke-width="5"/>
+          <circle cx="130" cy="60" r="20" fill="#EAF3DE" opacity=".7"/>
+          <line x1="150" y1="80" x2="170" y2="100" stroke="#27500A" stroke-width="6" stroke-linecap="round"/>
+          <!-- semana / calendario pequeño -->
+          <rect x="30" y="150" width="140" height="35" rx="8" fill="#EAF3DE" stroke="#27500A" stroke-width="2"/>
+          <text x="100" y="172" text-anchor="middle" font-size="12" fill="#27500A" font-weight="bold">Revisar cada 7 días</text>
+        </svg>
+        <img data-src="https://images.pexels.com/photos/7943224/pexels-photo-7943224.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop" alt="Revisión">
+      </div>
+      <div class="step-label">
+        <h3>🔍 Revisa cada semana</h3>
+        <p>A todos los de la casa, cada 7 días</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-sep"><div class="divider"></div></div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- 7. LIMPIEZA DEL PEINE -->
+<!-- ════════════════════════════════════════════════════ -->
+<section class="section" id="s-limpia">
+  <div class="section-title">
+    <span class="icon-big">✨</span>
+    <div class="section-title-text">
+      <h2>Limpia el peine después de usarlo</h2>
+      <p>3 pasos sencillos</p>
+    </div>
+  </div>
+
+  <div class="tip-card warning" style="margin-bottom:1rem">
+    <span class="tip-icon">🚫💧</span>
+    <div class="tip-text">
+      <h4>¡NUNCA mojes el cuerpo del peine!</h4>
+      <p>Solo el cabezal y el filtro van al agua. El cuerpo negro nunca.</p>
+    </div>
+  </div>
+
+  <div class="steps-grid theme-amber" style="grid-template-columns: repeat(3,1fr)">
+    <div class="step-card">
+      <div class="step-number"><span style="font-size:22px;font-weight:900">1</span></div>
+      <div class="step-visual" style="background:#FAEEDA">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- filtro girado sobre basurero -->
+          <rect x="62" y="25" width="76" height="65" rx="10" fill="#B5D4F4" stroke="#0C447C" stroke-width="2.5"/>
+          <text x="100" y="48" text-anchor="middle" font-size="11" fill="#0C447C" font-weight="bold">FILTRO</text>
+          <text x="100" y="68" text-anchor="middle" font-size="20">↓ girar</text>
+          <!-- flechas de caída piojos -->
+          <ellipse cx="82" cy="115" rx="7" ry="5" fill="#1a1a18"/>
+          <ellipse cx="100" cy="125" rx="7" ry="5" fill="#1a1a18"/>
+          <ellipse cx="118" cy="112" rx="6" ry="4" fill="#333"/>
+          <!-- basurero -->
+          <rect x="55" y="145" width="90" height="45" rx="8" fill="#999"/>
+          <rect x="48" y="138" width="104" height="14" rx="5" fill="#888"/>
+          <rect x="76" y="124" width="48" height="18" rx="4" fill="#888"/>
+        </svg>
+      </div>
+      <div class="step-label">
+        <h3>🗑️ Vaciar filtro</h3>
+        <p>Inclina sobre la basura</p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number"><span style="font-size:22px;font-weight:900">2</span></div>
+      <div class="step-visual" style="background:#FAEEDA">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- grifo con agua caliente y solo cabezal -->
+          <!-- grifo -->
+          <rect x="85" y="20" width="30" height="50" rx="5" fill="#888"/>
+          <ellipse cx="100" cy="20" rx="18" ry="8" fill="#999"/>
+          <!-- agua caliente -->
+          <path d="M100 70 Q95 90 98 110" stroke="#B5D4F4" stroke-width="5" stroke-linecap="round"/>
+          <path d="M100 70 Q105 95 102 115" stroke="#B5D4F4" stroke-width="5" stroke-linecap="round"/>
+          <!-- vapor -->
+          <path d="M88 80 Q84 70 88 60" stroke="#EF9F27" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M112 80 Q116 70 112 60" stroke="#EF9F27" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <!-- solo cabezal del peine -->
+          <rect x="65" y="118" width="70" height="30" rx="8" fill="#185FA5"/>
+          <rect x="72" y="148" width="7" height="20" rx="3" fill="#0C447C"/>
+          <rect x="84" y="148" width="7" height="18" rx="3" fill="#0C447C"/>
+          <rect x="96" y="148" width="7" height="20" rx="3" fill="#0C447C"/>
+          <rect x="108" y="148" width="7" height="18" rx="3" fill="#0C447C"/>
+          <text x="100" y="138" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">solo este</text>
+          <!-- temperatura -->
+          <text x="155" y="100" text-anchor="middle" font-size="13" fill="#EF9F27" font-weight="bold">60°C</text>
+        </svg>
+        <img data-src="https://images.pexels.com/photos/5241036/pexels-photo-5241036.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop" alt="Lavar cabezal">
+      </div>
+      <div class="step-label">
+        <h3>💧 Lavar cabezal</h3>
+        <p>Agua caliente. Solo el cabezal.</p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number"><span style="font-size:22px;font-weight:900">3</span></div>
+      <div class="step-visual" style="background:#FAEEDA">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- peine seco guardado -->
+          <rect x="45" y="50" width="110" height="80" rx="16" fill="#EAF3DE" stroke="#27500A" stroke-width="2.5"/>
+          <!-- caja/cajón -->
+          <rect x="55" y="90" width="90" height="30" rx="8" fill="#fff" stroke="#27500A" stroke-width="2"/>
+          <text x="100" y="110" text-anchor="middle" font-size="12" fill="#27500A" font-weight="bold">lugar seco</text>
+          <!-- peine adentro -->
+          <rect x="67" y="58" width="66" height="26" rx="6" fill="#0C447C"/>
+          <rect x="73" y="84" width="7" height="12" rx="3" fill="#185FA5"/>
+          <rect x="85" y="84" width="7" height="10" rx="3" fill="#185FA5"/>
+          <rect x="97" y="84" width="7" height="12" rx="3" fill="#185FA5"/>
+          <rect x="109" y="84" width="7" height="10" rx="3" fill="#185FA5"/>
+          <!-- sol / seco -->
+          <text x="160" y="60" text-anchor="middle" font-size="30">☀️</text>
+          <text x="160" y="80" text-anchor="middle" font-size="11" fill="#EF9F27" font-weight="bold">secar</text>
+          <!-- check -->
+          <circle cx="155" cy="155" r="20" fill="#27500A"/>
+          <text x="155" y="162" text-anchor="middle" font-size="20" fill="#fff">✓</text>
+        </svg>
+      </div>
+      <div class="step-label">
+        <h3>☀️ Secar y guardar</h3>
+        <p>Completamente seco antes de guardar</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cta">
+  <h3>🌟 La constancia es el secreto</h3>
+  <p>Úsalo todos los días las primeras 2 semanas. Luego sigue hasta eliminarlos todos. <strong>¡Tú puedes!</strong></p>
+</div>
+
+<div style="height:2rem"></div>
+
+<script>
+// Lazy load images
+const imgObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const img = e.target;
+      if (img.dataset.src) {
+        img.src = img.dataset.src;
+        img.onload = () => img.classList.add('loaded');
+        img.removeAttribute('data-src');
+        imgObserver.unobserve(img);
+      }
+    }
+  });
+}, { rootMargin: '150px' });
+document.querySelectorAll('img[data-src]').forEach(img => imgObserver.observe(img));
+
+// Nav
+function goTo(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const navH = document.getElementById('nav').offsetHeight;
+  window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - navH - 10, behavior: 'smooth' });
+  document.querySelectorAll('.dot-btn').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+// Auto-highlight nav on scroll
+const sections = document.querySelectorAll('section[id]');
+const sectionObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.dot-btn').forEach(b => b.classList.remove('active'));
+      const idx = [...sections].indexOf(e.target);
+      const btn = document.querySelectorAll('.dot-btn')[idx];
+      if (btn) { btn.classList.add('active'); btn.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' }); }
+    }
+  });
+}, { rootMargin: '-35% 0px -55% 0px' });
+sections.forEach(s => sectionObserver.observe(s));
+</script>
+</body>
+</html>
